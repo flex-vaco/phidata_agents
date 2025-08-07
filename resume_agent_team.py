@@ -48,7 +48,8 @@ def get_response(query:str, API=False):
             # pprint(structured_op.messages[-1].content)
             # print(structured_op.messages[-1].content)
 
-# get_response(query="what is per hour rate of Rajender? Also get his profile summary. get 2 references from his Linkedin proflie", API=False)
+#get_response(query="what is per hour rate of Rajender? Also get his profile summary. get 2 references from his Linkedin proflie", API=False)
+# get_response(query="List people with SalesForce skills with hourly rate under $45, also make sure they have expereince working with Vaco", API=False)
 
 # get_response(query="1. List people with Java Skils. " \
 # "2. Select a random name from the list and give the profile summary. " \

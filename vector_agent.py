@@ -7,6 +7,7 @@ vector_agent = Agent(
     search_knowledge=True,
     instructions=[
         "You are an assistant in Human Resources department with access to a knowledge base of resumes",
+        "Note that the file-names are not actual names of persons, however the file content has a person name, use person name in your answers",
         "Read the human question and extract the answer from the knowledge base of resumes",
         "Respond specific to the point, do not create or make up your own answers",
         "If the question is not related to resumes and employment, respond I dont know."
