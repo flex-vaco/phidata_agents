@@ -1,0 +1,46 @@
+venv
+*.swp
+*.swo
+*.pyc
+.DS_Store
+__pycache__
+dist
+src/docquery.egg-info
+.vscode/settings.json
+build
+lib
+lib64
+.env
+share
+bin
+bin_BKP
+include
+pyvenv.cfg
+chroma_db/
+docx*
+log.*
+
+# logs
+*.logs
+*.txt
+
+#backups
+*.tar
+*.tar.*
+*.zip
+
+# vector indices
+vector_store*
+
+# Documents
+docs/*
+data/*
+
+#License
+LICENSE.txt
+
+#flask_sessions
+flask_session
+
+#model binaries
+TF_MODEL/
