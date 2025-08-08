@@ -9,7 +9,6 @@ from google_search_agent import google_search_agent as Internet_Search_Agent
 from dotenv import load_dotenv
 from rich.pretty import pprint 
 
-# Load environment variables
 load_dotenv()
 
 my_model = OpenAIChat(id="gpt-4o")#Groq(id="llama-3.3-70b-versatile")
@@ -43,40 +42,32 @@ resume_team = Agent(
     name="HR Query Responder Team",
     team=[SQL_Agent, RAG_Agent, Internet_Search_Agent],
     model=my_model,
-    instructions=my_instructions,
+    instructions=gpt_instructions,
     show_tool_calls=False,
     markdown=True,
     prevent_hallucinations=True,
     prevent_prompt_leakage=True,
-    read_chat_history=True
+    read_chat_history=True,
+    add_history_to_messages=True,
+    num_history_responses=3,
 )
 
-def get_response(query:str, API=False):
+def get_response(query:str, user_session_id:str, API=False):
     if query is None:
         return "Please provide a question related to resume database"
+    elif user_session_id is None:
+        return "Please provide userid"
     else:
         if API:
+            resume_team.session_id = user_session_id
             structured_output = resume_team.run(query, stream=False)
-            print(structured_output.messages[-1].content)
-            return structured_output.messages[-1].content
+            # print(structured_output.messages[-1].content)
+            return structured_output.messages[-1].content or "Sorry! couldn't get response from AI."
         else:
-            # resume_team.print_response("List all people with Java skills", stream=True)
             resume_team.print_response(query, stream=True)
-            # structured_op = resume_team.run(f"List all people with python skills", stream=False)
-            # pprint(structured_op.messages[-1].content)
-            # print(structured_op.messages[-1].content)
 
-# q = "List people with 5 years expereince in React JS at a competitive rate compared to current market trends"
-# q="List the Agents you have access to"
+
 # q = "We have a total budget of 100 dollars per hour to build a Netsuite team. Feel free to suggest a team of resources with netsuite skills who can fit into this budget. The sum of rates of these resources should not exceed the budget."
 # get_response(query=q, API=False)
-# get_response(query="what is per hour rate of Rajender? Also get his profile summary. get 2 references from his Linkedin proflie", API=False)
+# get_response(query="what is per hour rate of Rajender? Also get his profile summary.", API=False)
 # get_response(query="List people with SalesForce skills with hourly rate under $45, also make sure they have expereince working with Vaco", API=False)
-
-# get_response(query="1. List people with Java Skils. " \
-# "2. Select a random name from the list and give the profile summary. " \
-# "3. Give me 5 questions to ask him/her based on the summary.", API=False)
-
-# get_response(query="1. List people with React Skils. " \
-# "2. Select a random name from the list and give the profile summary. " \
-# "3. Get the average salary for the above profile in current market.", API=False)
