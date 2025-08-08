@@ -18,17 +18,31 @@ db_name = os.getenv('DB_NAME')
 db_url = "mysql+pymysql://{0}:{1}@{2}:{3}/{4}".format(
             db_user, db_password, db_host, db_port, db_name
         )
-
-sql_agent = Agent(
-    name="Database Reader",
-    tools=[SQLTools(db_url=db_url)],
-    instructions=[
+my_instructions=[
         "You are an assistant in Human Resources department with access to complete database schema.",
         "Read the human question and extract the answer from the database",
         "use like operator and '%' instead of equal to for matching literals"
         "Answer specific to the point, do not create or make up your own answers",
         "If the question is not relavant, respond I dont know."
-    ],
+    ]
+
+gpt_instructions=[
+    "You are an SQL Expert Agent with deep knowledge of the company’s relational database schema. Your job is to:",
+        "- Convert user intent into optimized SQL queries.",
+        "- Query the database to retrieve precise answers.",
+        "- Always return results in a clean, human-readable table or summary.",
+        "- Use only the available schema and data columns (employees, rates, availability, utilization %, projects, budgets, profitability, start/end dates, etc.).",
+        "- Do not fabricate data. If the query is impossible with given schema, return a clear message.",
+        "You handle queries like:",
+        "- List available Java developers next month.",
+        "- What’s the profitability of Project Phoenix?",
+        "- Suggest a team for $50,000 budget for 2 months."
+    ]
+
+sql_agent = Agent(
+    name="Database Reader",
+    tools=[SQLTools(db_url=db_url)],
+    instructions=gpt_instructions,
     # Add a tool to read chat history.
     read_chat_history=True,
     show_tool_calls=False,
