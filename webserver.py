@@ -51,9 +51,15 @@ def get_doc_list(category):
 def isValidFileFormat(file_name):
     return file_name.endswith(tuple(validFileFormats))
 
+import re
+def remove_html_tags_regex(text):
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)
+
 @flask.route('/resume_query', methods = ['GET'])
 def get_resume_agent_response():
     query = request.args.get("query", None)
+    query = remove_html_tags_regex(query)
     user_session_id = request.args.get("user_id", None)
     if query is None or user_session_id is None:
         print("Please provide all the required params ")
@@ -65,6 +71,7 @@ def get_resume_agent_response():
 @flask.route('/sql_query', methods = ['GET'])
 def get_sql_agent_response():
     query = request.args.get("query", None)
+    query = remove_html_tags_regex(query)
     # user_session_id = request.args.get("user_id", None)
     if query is None:
         print("Please provide all the required params ")
