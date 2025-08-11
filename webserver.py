@@ -9,6 +9,7 @@ load_dotenv()
 from pathlib import Path
 from resume_agent_team import resume_team, get_response
 from datetime import datetime
+from sql_agent import get_sql_response
 
 flask = Flask(__name__, static_folder="../docs")
 flask.config["SESSION_PERMANENT"] = False
@@ -59,6 +60,16 @@ def get_resume_agent_response():
         return "Please provide all the required params ", 400
     # resume_team.run(query, stream=False).messages[-1].content or "Sorry! couldn't get response from AI."
     ai_answer = get_response(query, user_session_id, API=True)
+    return {"human_query":query, "ai_response": ai_answer}, 200
+
+@flask.route('/sql_query', methods = ['GET'])
+def get_sql_agent_response():
+    query = request.args.get("query", None)
+    # user_session_id = request.args.get("user_id", None)
+    if query is None:
+        print("Please provide all the required params ")
+        return "Please provide all the required params ", 400
+    ai_answer = get_sql_response(query, API=True)
     return {"human_query":query, "ai_response": ai_answer}, 200
 
 @flask.get("/health")

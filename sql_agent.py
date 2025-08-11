@@ -48,5 +48,20 @@ sql_agent = Agent(
     show_tool_calls=False,
     prevent_hallucinations=True
 )
+
+def get_sql_response(query:str, API=False):
+    if query is None:
+        return "Please provide a question related to resume database"
+    # elif user_session_id is None:
+    #     return "Please provide userid"
+    else:
+        if API:
+            # sql_agent.session_id = user_session_id
+            structured_output = sql_agent.run(query, stream=False)
+            # print(structured_output.messages[-1].content)
+            return structured_output.messages[-1].content or "Sorry! couldn't get response from AI."
+        else:
+            sql_agent.print_response(query, stream=True)
+
 # sql_agent.print_response("List the tables in the database. Tell me about contents of the users table")
 # sql_agent.print_response("what is per hour rate of Rajender?")
