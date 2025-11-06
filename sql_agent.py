@@ -10,7 +10,7 @@ load_dotenv()
 
 # DEFINE THE DATABASE CREDENTIALS
 db_user = os.getenv('DB_USER')
-db_password = urllib.parse.quote_plus(os.getenv('DB_PSWD'))
+db_password = urllib.parse.quote_plus(os.getenv('DB_PASSWORD'))
 db_host = os.getenv('DB_HOST')
 db_port = os.getenv('DB_PORT')
 db_name = os.getenv('DB_NAME')
@@ -39,10 +39,22 @@ gpt_instructions=[
         "- Suggest a team for $50,000 budget for 2 months."
     ]
 
+control_iq_instructions=[
+    "You are an SQL Expert Agent with deep knowledge of the relational database schema, which refers to IT Governance, SOX compliance context. Your job is to:",
+        "- Convert user intent into optimized SQL queries.",
+        "- Query the database to retrieve precise answers.",
+        "- Always return results in a clean, human-readable table or summary.",
+        "- Use only the available schema and data columns (`clients`, `evidence_documents`, `evidences`, `rcm`, `roles`, `tenants`, `test_attributes`,`test_execution_evidence_documents`, `test_executions`, and `users`).",
+        "- Do not fabricate data. If the query is impossible with given schema, return a clear message.",
+        "You handle queries like:",
+        "- List all the test executions failed in the 2025-Q3 audit cycle",
+        # "- What’s the profitability of Project Phoenix?",
+        # "- Suggest a team for $50,000 budget for 2 months."
+    ]
 sql_agent = Agent(
     name="Database Reader",
     tools=[SQLTools(db_url=db_url)],
-    instructions=gpt_instructions,
+    instructions=control_iq_instructions,
     # Add a tool to read chat history.
     read_chat_history=True,
     show_tool_calls=False,
@@ -51,7 +63,7 @@ sql_agent = Agent(
 
 def get_sql_response(query:str, API=False):
     if query is None:
-        return "Please provide a question related to resume database"
+        return "Please provide a question related to {} database".format(db_name)
     # elif user_session_id is None:
     #     return "Please provide userid"
     else:
@@ -65,3 +77,4 @@ def get_sql_response(query:str, API=False):
 
 # sql_agent.print_response("List the tables in the database. Tell me about contents of the users table")
 # sql_agent.print_response("what is per hour rate of Rajender?")
+get_sql_response("List all the test executions failed in the 2025-Q3 audit cycle")
