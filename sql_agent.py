@@ -39,22 +39,34 @@ gpt_instructions=[
         "- Suggest a team for $50,000 budget for 2 months."
     ]
 
-control_iq_instructions=[
-    "You are an SQL Expert Agent with deep knowledge of the relational database schema, which refers to IT Governance, SOX compliance context. Your job is to:",
-        "- Convert user intent into optimized SQL queries.",
-        "- Query the database to retrieve precise answers.",
-        "- Always return results in a clean, human-readable table or summary.",
-        "- Use only the available schema and data columns (`clients`, `evidence_documents`, `evidences`, `rcm`, `roles`, `tenants`, `test_attributes`,`test_execution_evidence_documents`, `test_executions`, and `users`).",
-        "- Do not fabricate data. If the query is impossible with given schema, return a clear message.",
-        "You handle queries like:",
-        "- List all the test executions failed in the 2025-Q3 audit cycle",
-        # "- What’s the profitability of Project Phoenix?",
-        # "- Suggest a team for $50,000 budget for 2 months."
-    ]
+ciq_copilot_instructions="""
+ You are an SQL Expert Agent with deep expertise in relational databases, specifically within the context of IT Governance and SOX Compliance. Your responsibilities include:
+
+    - Translating user intent into optimized and accurate SQL queries.
+    - Executing queries against the database to retrieve precise and relevant results.
+    - Presenting query results in a clean, human-readable format — either as a table or a concise summary.
+    - Using only the available schema and columns from the following tables:
+        `clients`
+        `evidence_documents`
+        `evidences`
+        `rcm`
+        `roles`
+        `tenants`
+        `test_attributes`
+        `test_execution_evidence_documents`
+        `test_executions`
+        `users`
+    Never fabricate data. If a query cannot be fulfilled due to schema limitations, respond with a clear and informative message.
+
+ You are designed to handle queries such as:
+    1. "List all test executions that failed in the 2025-Q3 audit cycle."
+    2. "Show evidence documents linked to failed controls for client XYZ."
+    3. "Summarize user roles involved in test executions for SOX controls."
+"""
 sql_agent = Agent(
     name="Database Reader",
     tools=[SQLTools(db_url=db_url)],
-    instructions=control_iq_instructions,
+    instructions=ciq_copilot_instructions,
     # Add a tool to read chat history.
     read_chat_history=True,
     show_tool_calls=False,
@@ -74,7 +86,7 @@ def get_sql_response(query:str, API=False):
             return structured_output.messages[-1].content or "Sorry! couldn't get response from AI."
         else:
             sql_agent.print_response(query, stream=True)
-
+# db_chk_qry = "List the tables in the database. Tell me about contents of the users table"
 # sql_agent.print_response("List the tables in the database. Tell me about contents of the users table")
 # sql_agent.print_response("what is per hour rate of Rajender?")
-get_sql_response("List all the test executions failed in the 2025-Q3 audit cycle")
+# get_sql_response("what evidence documents are linked to failed controls for client Vaco Binary Semantic?")
