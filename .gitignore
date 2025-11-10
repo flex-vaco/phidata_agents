@@ -12,9 +12,9 @@ lib
 lib64
 .env
 share
-bin
-bin_BKP
-include
+bin/
+bin_BKP/
+include/
 pyvenv.cfg
 chroma_db/
 docx*
